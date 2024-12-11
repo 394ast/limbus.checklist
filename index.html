@@ -132,11 +132,8 @@
   <p>共有用URL: <input type="text" id="shareUrl" readonly></p>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const checklists = document.querySelectorAll(".checklist-container"); // 複数のチェックリストを取得
-      const shareUrl = document.getElementById("shareUrl");
-
-      const stateMapping = ["0", "1", "2", "3", "4"];
+  document.addEventListener("DOMContentLoaded", () => {
+  const stateMapping = ["0", "1", "2", "3", "4"];
 
       const stateImages = {
         "1001": [
@@ -287,38 +284,53 @@
           "https://via.placeholder.com/100?text=4"
         ]
       };
+      
+      const shareUrl = document.getElementById("shareUrl");
 
-      checklists.forEach(checklist => {
-        checklist.addEventListener("click", (event) => {
-          const statusDiv = event.target.closest(".status"); // .status要素を取得
-          if (!statusDiv) return;
-
-          const currentImage = statusDiv.querySelector(".status-img"); // 画像を取得
-          let currentState = stateMapping.indexOf(currentImage.alt);
-
-          currentState = (currentState + 1) % stateMapping.length;
-          const characterId = statusDiv.getAttribute("data-id");
-          currentImage.src = stateImages[characterId][currentState];
-          currentImage.alt = stateMapping[currentState];
-
-          updateUrl();
-        });
-      });
-
-      function updateUrl() {
-        const selectedStates = Array.from(document.querySelectorAll(".status"))
-          .map(statusDiv => {
-            const id = statusDiv.getAttribute("data-id");
-            const img = statusDiv.querySelector(".status-img");
-            const stateText = img.alt;
-            return `${id}:${stateText}`;
-          })
-          .join(", ");
-
-        shareUrl.value = "https://example.com?states=" + encodeURIComponent(selectedStates);
+  // 初期化処理 - URLの状態を復元
+  const urlParams = new URLSearchParams(window.location.search);
+  const statesParam = urlParams.get("states");
+  if (statesParam) {
+    const statePairs = statesParam.split(",");
+    statePairs.forEach(pair => {
+      const [id, state] = pair.split(":");
+      const statusDiv = document.querySelector(`.status[data-id="${id}"]`);
+      if (statusDiv) {
+        const img = statusDiv.querySelector(".status-img");
+        img.src = stateImages[id][state];
+        img.alt = state;
       }
     });
-  </script>
+  }
+
+  // クリック時の状態変更
+  document.querySelectorAll(".status").forEach(statusDiv => {
+    statusDiv.addEventListener("click", () => {
+      const img = statusDiv.querySelector(".status-img");
+      const id = statusDiv.getAttribute("data-id");
+      let currentState = stateMapping.indexOf(img.alt);
+      currentState = (currentState + 1) % stateMapping.length;
+      img.src = stateImages[id][currentState];
+      img.alt = stateMapping[currentState];
+      updateUrl();
+    });
+  });
+
+  // URL更新関数
+  function updateUrl() {
+    const states = Array.from(document.querySelectorAll(".status"))
+      .map(div => {
+        const id = div.getAttribute("data-id");
+        const state = div.querySelector(".status-img").alt;
+        return `${id}:${state}`;
+      })
+      .join(",");
+    const baseUrl = "https://394ast.github.io/limbus.checklist/";
+    shareUrl.value = `${baseUrl}?states=${encodeURIComponent(states)}`;
+  }
+});
+</script>
+      
 
 </body>
 </html>
