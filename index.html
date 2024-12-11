@@ -55,11 +55,14 @@
     }
 
     #shareUrl {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin-top: 10px;
-      box-sizing: border-box;
+      width: auto;            /* URLの長さに応じて幅を自動調整 */
+      min-width: 300px;       /* 最小幅を設定（必要に応じて調整） */
+      padding: 10px;          /* 内側の余白 */
+      font-size: 16px;        /* フォントサイズ */
+      margin-top: 10px;       /* 上部に少し余白 */
+      box-sizing: border-box; /* 幅と高さにpaddingも含める */
+      height: 40px;           /* 高さを調整 */
+      word-wrap: break-word;  /* 長すぎるURLが折り返されるようにする */
     }
   </style>
 </head>
