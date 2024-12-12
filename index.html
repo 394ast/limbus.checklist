@@ -108,7 +108,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const statesParam = urlParams.get("states");
     if (statesParam) {
-      const decompressedStates = decompressData(statesParam); // 解凍処理を追加
+      const decompressedStates = decompressData(statesParam); // 解凍処理
       restoreState(decompressedStates);
     }
   
@@ -209,7 +209,7 @@
       return decompressedStates;
     }
 
-    // 欠損IDを復元する関数
+    // 状態を復元する関数
     function restoreState(states) {
       let idx = 0;
 
@@ -220,7 +220,7 @@
 
         for (let i = 0; i < count; i++) {
           const id = startId + i;
-          const state = groupStates[i] !== undefined ? groupStates[i] : 0; // 欠損IDには状態0を設定
+          const state = groupStates[i]; // 不要な欠損ID設定を防ぐ
           const statusDiv = document.querySelector(`.status[data-id="${id}"]`);
           if (statusDiv) {
             const img = statusDiv.querySelector(".status-img");
