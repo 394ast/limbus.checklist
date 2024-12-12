@@ -51,7 +51,7 @@
       font-size: 16px;
       height: 40px;
       overflow-x: auto;
-      white-space: normal;    /* 必要に応じて改行 */
+      white-space: normal;
     }
   </style>
 </head>
@@ -148,11 +148,11 @@
         if (data[i] === data[i - 1]) {
           count++;
         } else {
-          result += count + data[i - 1];
+          result += (count < 10 ? '0' : '') + count + data[i - 1];
           count = 1;
         }
       }
-      result += count + data[data.length - 1];
+      result += (count < 10 ? '0' : '') + count + data[data.length - 1];
       return result;
     }
 
@@ -161,12 +161,12 @@
       let result = [];
       let i = 0;
       while (i < encodedData.length) {
-        let count = parseInt(encodedData[i]);
-        let state = encodedData[i + 1];
+        let count = parseInt(encodedData[i] + encodedData[i + 1]); // 2桁に対応
+        let state = encodedData[i + 2];
         for (let j = 0; j < count; j++) {
           result.push(state);
         }
-        i += 2; // 次のペアへ
+        i += 3; // 次のペアへ
       }
       return result;
     }
@@ -175,7 +175,7 @@
     function compressData(states) {
       let result = [];
       let currentGroup = [];
-      const separator = 7;  // 区切り文字
+      const separator = '7';  // 圧縮時は区切り文字 '7'
 
       let idx = 0;
       // 各グループごとに圧縮
@@ -199,7 +199,7 @@
 
     // 解凍処理
     function decompressData(encodedData) {
-      let groups = encodedData.split('7'); // 区切り文字で分割
+      let groups = encodedData.split('7'); // 圧縮時に使った区切り文字 '7' で分割
       let decompressedStates = [];
       groups.forEach(group => {
         if (group) {
