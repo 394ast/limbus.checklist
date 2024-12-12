@@ -175,7 +175,7 @@
     function compressData(states) {
       let result = [];
       let currentGroup = [];
-      const separator = '7';  // 圧縮時は区切り文字 '7'
+      const separator = '-';  // 区切り文字
 
       let idx = 0;
       // 各グループごとに圧縮
@@ -199,7 +199,7 @@
 
     // 解凍処理
     function decompressData(encodedData) {
-      let groups = encodedData.split('7'); // 圧縮時に使った区切り文字 '7' で分割
+      let groups = encodedData.split('-'); // 圧縮時に使った区切り文字で分割
       let decompressedStates = [];
       groups.forEach(group => {
         if (group) {
