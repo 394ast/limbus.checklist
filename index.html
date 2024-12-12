@@ -108,8 +108,8 @@
     const urlParams = new URLSearchParams(window.location.search);
     const statesParam = urlParams.get("states");
     if (statesParam) {
-      const statePairs = statesParam.split("");
-      restoreState(statePairs);
+      const decompressedStates = decompressData(statesParam); // 解凍処理を追加
+      restoreState(decompressedStates);
     }
   
     // クリック時の状態変更とURL更新
@@ -156,6 +156,21 @@
       return result;
     }
 
+    // 解凍関数（ランレングス圧縮の逆）
+    function runLengthDecode(encodedData) {
+      let result = [];
+      let i = 0;
+      while (i < encodedData.length) {
+        let count = parseInt(encodedData[i]);
+        let state = encodedData[i + 1];
+        for (let j = 0; j < count; j++) {
+          result.push(state);
+        }
+        i += 2; // 次のペアへ
+      }
+      return result;
+    }
+
     // 圧縮処理
     function compressData(states) {
       let result = [];
@@ -180,6 +195,18 @@
       }
 
       return result.join("");
+    }
+
+    // 解凍処理
+    function decompressData(encodedData) {
+      let groups = encodedData.split('7'); // 区切り文字で分割
+      let decompressedStates = [];
+      groups.forEach(group => {
+        if (group) {
+          decompressedStates = decompressedStates.concat(runLengthDecode(group)); // 解凍
+        }
+      });
+      return decompressedStates;
     }
 
     // 欠損IDを復元する関数
