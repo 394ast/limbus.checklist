@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>リンバス所持共有ツール</title>
+  <title>リンバス所持人格E.G.O共有ツール</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -57,90 +57,108 @@
 </head>
 <body>
 
-  <h2>リンバス所持共有ツール</h2>
-  <p>クリックして強化段階を変更できます。</p>
+  <h2>リンバス所持人格E.G.O共有ツール</h2>
+  <p>クリックして強化段階を変更できます。<br>実装順に並んでいます。</p>
+  <p><button id="resetButton">全て未所持に</button></p>
 
   <div class="checklist-container" data-group="1"></div>
   <div class="checklist-container" data-group="2"></div>
+  <div class="checklist-container" data-group="3"></div>
+  <div class="checklist-container" data-group="4"></div>
+  <div class="checklist-container" data-group="5"></div>
 
   <p>共有用URL: <input type="text" id="shareUrl" readonly></p>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const baseImageUrl = "https://raw.githubusercontent.com/394ast/limbus.checklist/main/";
-      const defaultState = 4; // 初期状態
-      const maxState = 4; // 状態の最大値
-      const groupSettings = {
-        1: { startId: 1001, count: 10 },
-        2: { startId: 2001, count: 10 }
-      };
-    
-      // 各コンテナに要素を生成
-      document.querySelectorAll(".checklist-container").forEach(container => {
-        const group = container.getAttribute("data-group");
-        const { startId, count } = groupSettings[group];
-    
-        for (let i = startId; i < startId + count; i++) {
-          const statusDiv = document.createElement("div");
-          statusDiv.className = "status";
-          statusDiv.setAttribute("data-id", i);
-    
-          const img = document.createElement("img");
-          img.src = `${baseImageUrl}limbus${i}.${defaultState}.png`;
-          img.alt = defaultState;
-          img.className = "status-img";
-    
-          statusDiv.appendChild(img);
-          container.appendChild(statusDiv);
-        }
-      });
-    
-      const shareUrl = document.getElementById("shareUrl");
-    
-      // 状態復元処理
-      const urlParams = new URLSearchParams(window.location.search);
-      const statesParam = urlParams.get("states");
-      if (statesParam) {
-        const statePairs = statesParam.split(",");
-        statePairs.forEach(pair => {
-          const [id, state] = pair.split(":");
-          const statusDiv = document.querySelector(`.status[data-id="${id}"]`);
-          if (statusDiv) {
-            const img = statusDiv.querySelector(".status-img");
-            img.src = `${baseImageUrl}limbus${id}.${state}.png`;
-            img.alt = state;
-          }
-        });
-      }
-    
-      // クリック時の状態変更とURL更新
-      document.querySelectorAll(".status").forEach(statusDiv => {
-        statusDiv.addEventListener("click", () => {
-          const img = statusDiv.querySelector(".status-img");
-          const id = statusDiv.getAttribute("data-id");
-          let currentState = parseInt(img.alt, 10);
-          currentState = (currentState + 1) % (maxState + 1); // 状態を循環
-          img.src = `${baseImageUrl}limbus${id}.${currentState}.png`;
-          img.alt = currentState;
-    
-          // URLを更新
-          updateUrl();
-        });
-      });
-    
-      function updateUrl() {
-        const states = Array.from(document.querySelectorAll(".status"))
-          .map(div => {
-            const id = div.getAttribute("data-id");
-            const state = div.querySelector(".status-img").alt;
-            return `${id}:${state}`;
-          })
-          .join(",");
-        const baseUrl = "https://394ast.github.io/limbus.checklist/";
-        shareUrl.value = `${baseUrl}?states=${encodeURIComponent(states)}`;
+  document.addEventListener("DOMContentLoaded", () => {
+    const baseImageUrl = "https://raw.githubusercontent.com/394ast/limbus.checklist/main/";
+    const defaultState = 4; // 初期状態
+    const maxState = 4; // 状態の最大値
+    const groupSettings = {
+      1: { startId: 1001, count: 10 },
+      2: { startId: 2001, count: 10 },
+      3: { startId: 3001, count: 10 },
+      4: { startId: 4001, count: 10 },
+      5: { startId: 5001, count: 11 },
+    };
+
+    // 各コンテナに要素を生成
+    document.querySelectorAll(".checklist-container").forEach(container => {
+      const group = container.getAttribute("data-group");
+      const { startId, count } = groupSettings[group];
+
+      for (let i = startId; i < startId + count; i++) {
+        const statusDiv = document.createElement("div");
+        statusDiv.className = "status";
+        statusDiv.setAttribute("data-id", i);
+
+        const img = document.createElement("img");
+        img.src = `${baseImageUrl}limbus${i}.${defaultState}.png`;
+        img.alt = defaultState;
+        img.className = "status-img";
+
+        statusDiv.appendChild(img);
+        container.appendChild(statusDiv);
       }
     });
-    </script>
+
+    const shareUrl = document.getElementById("shareUrl");
+
+    // 状態復元処理
+    const urlParams = new URLSearchParams(window.location.search);
+    const statesParam = urlParams.get("states");
+    if (statesParam) {
+      const statePairs = statesParam.split("");
+      statePairs.forEach((state, idx) => {
+        const statusDiv = document.querySelector(`.status[data-id="${Object.values(groupSettings).flat()[idx]}"]`);
+        if (statusDiv) {
+          const img = statusDiv.querySelector(".status-img");
+          img.src = `${baseImageUrl}limbus${Object.values(groupSettings).flat()[idx]}.${state}.png`;
+          img.alt = state;
+        }
+      });
+    }
+
+    // クリック時の状態変更とURL更新
+    document.querySelectorAll(".status").forEach(statusDiv => {
+      statusDiv.addEventListener("click", () => {
+        const img = statusDiv.querySelector(".status-img");
+        const id = statusDiv.getAttribute("data-id");
+        let currentState = parseInt(img.alt, 10);
+        currentState = (currentState + 1) % (maxState + 1); // 状態を循環
+        img.src = `${baseImageUrl}limbus${id}.${currentState}.png`;
+        img.alt = currentState;
+
+        // URLを更新
+        updateUrl();
+      });
+    });
+
+    // URL更新関数
+    function updateUrl() {
+      const states = Array.from(document.querySelectorAll(".status"))
+        .map(div => {
+          const state = div.querySelector(".status-img").alt;
+          return state; // 状態だけをURLに追加
+        })
+        .join("");  // ここでカンマを削除して、状態をそのまま繋げる
+
+      const baseUrl = "https://394ast.github.io/limbus.checklist/";
+      shareUrl.value = `${baseUrl}?states=${states}`;
+    }
+
+    // 全てリセットボタンの処理
+    document.getElementById("resetButton").addEventListener("click", () => {
+      document.querySelectorAll(".status").forEach(statusDiv => {
+        const img = statusDiv.querySelector(".status-img");
+        const id = statusDiv.getAttribute("data-id");
+        img.src = `${baseImageUrl}limbus${id}.0.png`; // 状態を0に変更
+        img.alt = 0;
+      });
+      updateUrl(); // URLも更新
+    });
+  });
+  </script>
 
 </body>
 </html>
