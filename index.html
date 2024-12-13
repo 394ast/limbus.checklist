@@ -160,16 +160,20 @@
     function runLengthDecode(encodedData) {
       let result = [];
       let i = 0;
-      while (i < encodedData.length) {
-        let count = parseInt(encodedData[i] + encodedData[i + 1]); // 2桁に対応
-        let state = encodedData[i + 2];
-        for (let j = 0; j < count; j++) {
-          result.push(state);
-        }
-        i += 3; // 次のペアへ
-      }
-      return result;
+  
+    while (i < encodedData.length) {
+      let count = parseInt(encodedData[i] + encodedData[i + 1]); // 2桁に対応
+      let state = encodedData[i + 2];
+    
+    for (let j = 0; j < count; j++) {
+      result.push(state);
     }
+    i += 3; // 次のペアへ
+    }
+  
+    return result;
+    }
+
 
     // 圧縮処理
     function compressData(states) {
@@ -193,43 +197,61 @@
           }
         }
       }
-
       return result.join("");
-    }
+      }
 
     // 解凍処理
     function decompressData(encodedData) {
       let groups = encodedData.split('-'); // 圧縮時に使った区切り文字で分割
       let decompressedStates = [];
+      let groupCounts = [];  // グループごとの要素数を保存する配列
+
       groups.forEach(group => {
-        if (group) {
-          decompressedStates = decompressedStates.concat(runLengthDecode(group)); // 解凍
-        }
-      });
-      return decompressedStates;
+      if (group) {
+      // runLengthDecodeで状態の配列と要素数を取得
+      const { result } = runLengthDecode(group);
+      decompressedStates = decompressedStates.concat(result); // 状態を追加
+      groupCounts.push(result.length); // ここで文字数（配列の長さ）をカウント
+      }
+     });
+  
+      return { result: decompressedStates, groupCounts }; // 状態とグループごとの要素数を返す
     }
 
-    // 状態を復元する関数
-    function restoreState(states) {
+
+    // 状態を復元する関数 
+    function restoreState(states, groupCounts) {
       let idx = 0;
 
       // 各グループに対して状態を復元
-      Object.entries(groupSettings).forEach(([group, { startId, count }]) => {
-        const groupStates = states.slice(idx, idx + count); // グループ分の状態を取り出す
-        idx += count;
+      Object.entries(groupSettings).forEach(([group, { startId, count }], groupIndex) => {
+      const groupStates = states.slice(idx, idx + groupCounts[groupIndex]); // グループ分の状態を取り出す
+      idx += groupCounts[groupIndex]; // 次のグループの開始インデックスに進む
 
-        for (let i = 0; i < count; i++) {
-          const id = startId + i;
-          const state = groupStates[i]; // 不要な欠損ID設定を防ぐ
-          const statusDiv = document.querySelector(`.status[data-id="${id}"]`);
-          if (statusDiv) {
-            const img = statusDiv.querySelector(".status-img");
-            img.src = `${baseImageUrl}limbus${id}.${state}.png`;
-            img.alt = state;
-          }
-        }
+      // 実際の状態数と設定されたカウントを比較
+      const groupCount = groupSettings[group].count;
+
+      // 実際の状態数が設定されたカウントより少ない場合、0の状態を埋める
+      if (groupCounts[groupIndex] < groupCount) {
+      const missingStates = groupCount - groupCounts[groupIndex]; // 足りない状態数
+      groupStates.push(...Array(missingStates).fill("0")); // 0で埋める
+      }
+
+      // 各IDに対して状態を適用
+      for (let i = 0; i < groupCount; i++) {
+        const id = startId + i;
+        const state = groupStates[i]; // 現在の状態を取得
+        const statusDiv = document.querySelector(`.status[data-id="${id}"]`);
+      
+      if (statusDiv) {
+        const img = statusDiv.querySelector(".status-img");
+        img.src = `${baseImageUrl}limbus${id}.${state}.png`;
+        img.alt = state;
+      }
+      }
       });
-    }
+      }
+
 
     // 全てリセットボタンの処理
     document.getElementById("resetButton").addEventListener("click", () => {
