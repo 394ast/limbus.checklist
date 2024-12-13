@@ -151,6 +151,8 @@
       restoreState(decompressedStates);
     }
 
+    // ページが読み込まれたときにもURLを更新
+      updateUrl();
 
     // クリック時の状態変更とURL更新
     document.querySelectorAll(".status").forEach(statusDiv => {
@@ -282,9 +284,6 @@
     // テキストエリアの内容に基づいて高さを調整
     textarea.style.height = textarea.scrollHeight + 'px';
     }
-
-    // ページが読み込まれたときにも高さを調整
-    window.addEventListener('load', adjustTextareaHeight);
 
     // ページのリサイズ時にも調整
     window.addEventListener('resize', adjustTextareaHeight);
