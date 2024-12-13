@@ -194,7 +194,9 @@
           // グループの最後で区切りを入れる
           if (currentGroup.length === count) {
             result.push(runLengthEncode(currentGroup)); // 現在のグループを圧縮
-            result.push(separator); // 区切り文字を追加
+            if (Object.entries(groupSettings).length - 1 !== parseInt(group) - 1) {
+              result.push(separator); // 最後のグループ以外に区切り文字を追加
+            }
             currentGroup = []; // 次のグループを開始
           }
         }
