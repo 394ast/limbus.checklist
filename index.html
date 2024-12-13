@@ -60,7 +60,7 @@
 
   <h2>リンバス所持人格E.G.O共有ツール</h2>
   <p>画像をクリックして強化段階を変更できます。<br>人格は同期化段階に合わせて画像も変わります。<br>実装順に並んでいます。<br>一番下に共有用URLが表示されます。</p>
-  <p><button id="resetButton">全て未所持に</button></p>
+  <p><button id="resetButton">初期人格E.G.Oのみ所持</button></p>
 
   <div class="checklist-container" data-group="1"></div>
   <div class="checklist-container" data-group="2"></div>
@@ -266,15 +266,23 @@
 
     // 全てリセットボタンの処理
     document.getElementById("resetButton").addEventListener("click", () => {
-      document.querySelectorAll(".status").forEach(statusDiv => {
-        const img = statusDiv.querySelector(".status-img");
-        const id = statusDiv.getAttribute("data-id");
-        img.src = `${baseImageUrl}limbus${id}.0.png`; // 状態を0に変更
-        img.alt = 0;
-      });
-      updateUrl(); // URLも更新
-    });
+    document.querySelectorAll(".status").forEach(statusDiv => {
+    const img = statusDiv.querySelector(".status-img");
+    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
 
+    if (id % 1000 === 1 && id >= 1001 && id <= 24001) {
+      // IDが1001, 2001, ..., 24001の規則に一致する場合
+      img.src = `${baseImageUrl}limbus${id}.1.png`;
+      img.alt = 1;
+    } else {
+      // その他のIDは状態を0に変更
+      img.src = `${baseImageUrl}limbus${id}.0.png`;
+      img.alt = 0;
+    }
+    });
+    updateUrl(); // URLも更新
+    });
+    
     function adjustTextareaHeight() {
     const textarea = document.getElementById('shareUrl');
     
