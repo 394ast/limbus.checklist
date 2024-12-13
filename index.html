@@ -51,6 +51,8 @@
       font-size: 16px;
       height: 40px;
       overflow-x: auto;
+      word-wrap: break-word;
+      word-break: break-word;
       white-space: normal;
     }
   </style>
@@ -66,8 +68,27 @@
   <div class="checklist-container" data-group="3"></div>
   <div class="checklist-container" data-group="4"></div>
   <div class="checklist-container" data-group="5"></div>
-
-  <p>共有用URL: <input type="text" id="shareUrl" readonly></p>
+  <div class="checklist-container" data-group="6"></div>
+  <div class="checklist-container" data-group="7"></div>
+  <div class="checklist-container" data-group="8"></div>
+  <div class="checklist-container" data-group="9"></div>
+  <div class="checklist-container" data-group="10"></div>
+  <div class="checklist-container" data-group="11"></div>
+  <div class="checklist-container" data-group="12"></div>
+  <div class="checklist-container" data-group="13"></div>
+  <div class="checklist-container" data-group="14"></div>
+  <div class="checklist-container" data-group="15"></div>
+  <div class="checklist-container" data-group="16"></div>
+  <div class="checklist-container" data-group="17"></div>
+  <div class="checklist-container" data-group="18"></div>
+  <div class="checklist-container" data-group="19"></div>
+  <div class="checklist-container" data-group="20"></div>
+  <div class="checklist-container" data-group="21"></div>
+  <div class="checklist-container" data-group="22"></div>
+  <div class="checklist-container" data-group="23"></div>
+  <div class="checklist-container" data-group="24"></div>
+  
+ <p>共有用URL: <textarea id="shareUrl" readonly></textarea></p>
 
   <script>
   document.addEventListener("DOMContentLoaded", () => {
@@ -80,6 +101,25 @@
       3: { startId: 3001, count: 10 },
       4: { startId: 4001, count: 10 },
       5: { startId: 5001, count: 11 },
+      6: { startId: 6001, count: 10 },
+      7: { startId: 7001, count: 10 },
+      8: { startId: 8001, count: 10 },
+      9: { startId: 9001, count: 11 },
+      10: { startId: 10001, count: 11 },
+      11: { startId: 11001, count: 11 },
+      12: { startId: 12001, count: 10 },
+      13: { startId: 13001, count: 7 },
+      14: { startId: 14001, count: 8 },
+      15: { startId: 15001, count: 8 },
+      16: { startId: 16001, count: 7 },
+      17: { startId: 17001, count: 7 },
+      18: { startId: 18001, count: 7 },
+      19: { startId: 19001, count: 8 },
+      20: { startId: 20001, count: 7 },
+      21: { startId: 21001, count: 7 },
+      22: { startId: 22001, count: 7 },
+      23: { startId: 23001, count: 7 },
+      24: { startId: 24001, count: 7 },
     }; // 新規で追加するときはここを変更する
 
     // 各コンテナに要素を生成
