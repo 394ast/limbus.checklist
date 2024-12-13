@@ -104,12 +104,14 @@
 
     const shareUrl = document.getElementById("shareUrl");
 
-    // 状態復元処理
+   // 状態復元処理
     const urlParams = new URLSearchParams(window.location.search);
     const statesParam = urlParams.get("states");
     if (statesParam) {
-      const decompressedStates = decompressData(statesParam); // 解凍処理
-      restoreState(decompressedStates);
+      if (statesParam) {
+        const { result: decompressedStates, groupCounts } = decompressData(statesParam); // 解凍処理
+        restoreState(decompressedStates, groupCounts); 
+      }
     }
   
     // クリック時の状態変更とURL更新
