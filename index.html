@@ -108,8 +108,8 @@
     const urlParams = new URLSearchParams(window.location.search);
     const statesParam = urlParams.get("states");
     if (statesParam) {
-      const { result: decompressedStates, groupCounts } = decompressData(statesParam); // 解凍処理
-      restoreState(decompressedStates, groupCounts);
+      const { result: decompressedStates } = decompressData(statesParam); // 解凍処理
+      restoreState(decompressedStates);
     }
 
     // クリック時の状態変更とURL更新
@@ -181,30 +181,32 @@
     function decompressData(encodedData) {
       const groups = encodedData.split('-');
       const decompressedStates = [];
-      const groupCounts = [];
 
-      groups.forEach(group => {
+      groups.forEach((group, index) => {
+        const { count } = Object.values(groupSettings)[index];
         if (group) {
           const decoded = runLengthDecode(group);
+          while (decoded.length < count) {
+            decoded.push("0"); // 不足分を補完
+          }
           decompressedStates.push(...decoded);
-          groupCounts.push(decoded.length);
         }
       });
 
-      return { result: decompressedStates, groupCounts };
+      return { result: decompressedStates };
     }
 
     // 状態を復元する関数 
-    function restoreState(states, groupCounts) {
+    function restoreState(states) {
       let idx = 0;
 
-      Object.entries(groupSettings).forEach(([group, { startId, count }], groupIndex) => {
+      Object.entries(groupSettings).forEach(([group, { startId, count }]) => {
         const groupStates = states.slice(idx, idx + count); // グループ分の状態を取り出す
         idx += count;
 
         for (let i = 0; i < count; i++) {
           const id = startId + i;
-          const state = groupStates[i] || "0"; // 状態が不足している場合は0を設定
+          const state = groupStates[i];
           const statusDiv = document.querySelector(`.status[data-id="${id}"]`);
 
           if (statusDiv) {
@@ -231,3 +233,4 @@
 
 </body>
 </html>
+
