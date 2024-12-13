@@ -45,22 +45,21 @@
       margin-top: 20px;
     }
 
-    #shareUrl {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      height: 40px;
-      overflow-x: auto;
-      word-wrap: break-word;
-      word-break: break-word;
-      white-space: normal;
+    textarea {
+      width: 100%; /* 親要素の幅に合わせる */
+      padding: 10px; /* 余白を設定 */
+      font-size: 16px; /* フォントサイズを指定 */
+      resize: none; /* ユーザーによる手動のリサイズを無効にする */
+      overflow: hidden; /* スクロールバーを表示しない */
+      box-sizing: border-box; /* パディングとボーダーを含めたサイズ計算 */
     }
+ 
   </style>
 </head>
 <body>
 
   <h2>リンバス所持人格E.G.O共有ツール</h2>
-  <p>クリックして強化段階を変更できます。<br>実装順に並んでいます。</p>
+  <p>クリックして強化段階を変更できます。<br>実装順に並んでいます。<br>一番下に共有用URLが表示されます。</p>
   <p><button id="resetButton">全て未所持に</button></p>
 
   <div class="checklist-container" data-group="1"></div>
@@ -87,8 +86,8 @@
   <div class="checklist-container" data-group="22"></div>
   <div class="checklist-container" data-group="23"></div>
   <div class="checklist-container" data-group="24"></div>
-  
- <p>共有用URL: <textarea id="shareUrl" readonly></textarea></p>
+
+  <p>共有用URL: <textarea id="shareUrl" readonly></textarea></p>
 
   <script>
   document.addEventListener("DOMContentLoaded", () => {
@@ -152,6 +151,7 @@
       restoreState(decompressedStates);
     }
 
+
     // クリック時の状態変更とURL更新
     document.querySelectorAll(".status").forEach(statusDiv => {
       statusDiv.addEventListener("click", () => {
@@ -175,6 +175,8 @@
       const encodedData = btoa(compressedData); // Base64エンコード
       const baseUrl = "https://394ast.github.io/limbus.checklist/";
       shareUrl.value = `${baseUrl}?states=${encodedData}`;
+
+      adjustTextareaHeight(); // テキストエリアの高さを更新
     }
 
     // 圧縮関数（ランレングス圧縮）
@@ -270,6 +272,23 @@
       });
       updateUrl(); // URLも更新
     });
+
+    function adjustTextareaHeight() {
+    const textarea = document.getElementById('shareUrl');
+    
+    // 高さを自動的にリセット
+    textarea.style.height = 'auto'; 
+    
+    // テキストエリアの内容に基づいて高さを調整
+    textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // ページが読み込まれたときにも高さを調整
+    window.addEventListener('load', adjustTextareaHeight);
+
+    // ページのリサイズ時にも調整
+    window.addEventListener('resize', adjustTextareaHeight);
+
   });
   </script>
 
