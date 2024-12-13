@@ -80,7 +80,7 @@
       3: { startId: 3001, count: 10 },
       4: { startId: 4001, count: 10 },
       5: { startId: 5001, count: 11 },
-    };
+    }; // 新規で追加するときはここを変更する
 
     // 各コンテナに要素を生成
     document.querySelectorAll(".checklist-container").forEach(container => {
@@ -132,8 +132,9 @@
         .map(div => div.querySelector(".status-img").alt);
 
       const compressedData = compressData(states);
+      const encodedData = btoa(compressedData); // Base64エンコード
       const baseUrl = "https://394ast.github.io/limbus.checklist/";
-      shareUrl.value = `${baseUrl}?states=${compressedData}`;
+      shareUrl.value = `${baseUrl}?states=${encodedData}`;
     }
 
     // 圧縮関数（ランレングス圧縮）
@@ -179,7 +180,8 @@
 
     // 解凍処理
     function decompressData(encodedData) {
-      const groups = encodedData.split('-');
+      const decodedData = atob(encodedData); // Base64デコード
+      const groups = decodedData.split('-');
       const decompressedStates = [];
 
       groups.forEach((group, index) => {
@@ -233,4 +235,3 @@
 
 </body>
 </html>
-
