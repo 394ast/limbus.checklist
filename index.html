@@ -54,14 +54,37 @@
       box-sizing: border-box; /* パディングとボーダーを含めたサイズ計算 */
     }
  
+    #buttons-container {
+    display: grid; /* グリッドレイアウトを使用 */
+    grid-template-columns: repeat(2, max-content); /* 2列に分割 */
+    gap: 10px; /* ボタン間の余白 */
+    }
+
+    button {
+    padding: 10px;
+    max-width: 175px;
+    width: 100%;
+    box-sizing: border-box;
+    }
+
   </style>
 </head>
 <body>
 
   <h2>リンバス所持人格E.G.O共有ツール</h2>
   <p>画像をクリックして強化段階を変更できます。<br>人格は同期化段階に合わせて画像も変わります。<br>実装順に並んでいます。<br>一番下に共有用URLが表示されます。</p>
-  <p><button id="resetButton">初期人格E.G.Oのみ所持</button></p>
-
+  <p><button id="reset0">初期人格E.G.Oのみ所持</button></p>
+  <div id="buttons-container">
+    <button id="人格reset1">人格を全て同期1に</button>
+    <button id="E.G.Oreset1">E.G.Oを全て解析1に</button>
+    <button id="人格reset2">人格を全て同期2に</button>
+    <button id="E.G.Oreset2">E.G.Oを全て解析2に</button>
+    <button id="人格reset3">人格を全て同期3に</button>
+    <button id="E.G.Oreset3">E.G.Oを全て解析3に</button>
+    <button id="人格reset4">人格を全て同期4に</button>
+    <button id="E.G.Oreset4">E.G.Oを全て解析4に</button>
+  </div>
+  <br>
   <div class="checklist-container" data-group="1"></div>
   <div class="checklist-container" data-group="2"></div>
   <div class="checklist-container" data-group="3"></div>
@@ -151,7 +174,7 @@
       const { result: decompressedStates } = decompressData(statesParam); // 解凍処理
       restoreState(decompressedStates);
     }
-
+    
     // ページが読み込まれたときにもURLを更新
       updateUrl();
 
@@ -265,8 +288,8 @@
       });
     }
 
-    // 全てリセットボタンの処理
-    document.getElementById("resetButton").addEventListener("click", () => {
+    // 全てボタンの処理
+    document.getElementById("reset0").addEventListener("click", () => {
     document.querySelectorAll(".status").forEach(statusDiv => {
     const img = statusDiv.querySelector(".status-img");
     const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
@@ -283,7 +306,113 @@
     });
     updateUrl(); // URLも更新
     });
-    
+
+    document.getElementById("人格reset1").addEventListener("click", () => {
+    document.querySelectorAll(".status").forEach(statusDiv => {
+    const img = statusDiv.querySelector(".status-img");
+    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+
+    if (id >= 1001 && id < 13000) {
+      img.src = `${baseImageUrl}limbus${id}.1.png`;
+      img.alt = 1;
+    } 
+    });
+    updateUrl(); // URLも更新
+    });
+
+    document.getElementById("E.G.Oreset1").addEventListener("click", () => {
+    document.querySelectorAll(".status").forEach(statusDiv => {
+    const img = statusDiv.querySelector(".status-img");
+    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+
+    if (id >= 13001 && id < 25000) {
+      img.src = `${baseImageUrl}limbus${id}.1.png`;
+      img.alt = 1;
+    } 
+    });
+    updateUrl(); // URLも更新
+    });
+
+    document.getElementById("人格reset2").addEventListener("click", () => {
+    document.querySelectorAll(".status").forEach(statusDiv => {
+    const img = statusDiv.querySelector(".status-img");
+    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+
+    if (id >= 1001 && id < 13000) {
+      img.src = `${baseImageUrl}limbus${id}.2.png`;
+      img.alt = 2;
+    } 
+    });
+    updateUrl(); // URLも更新
+    });
+
+    document.getElementById("E.G.Oreset2").addEventListener("click", () => {
+    document.querySelectorAll(".status").forEach(statusDiv => {
+    const img = statusDiv.querySelector(".status-img");
+    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+
+    if (id >= 13001 && id < 25000) {
+      img.src = `${baseImageUrl}limbus${id}.2.png`;
+      img.alt = 2;
+    } 
+    });
+    updateUrl(); // URLも更新
+    });
+
+    document.getElementById("人格reset3").addEventListener("click", () => {
+    document.querySelectorAll(".status").forEach(statusDiv => {
+    const img = statusDiv.querySelector(".status-img");
+    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+
+    if (id >= 1001 && id < 13000) {
+      img.src = `${baseImageUrl}limbus${id}.3.png`;
+      img.alt = 3;
+    } 
+    });
+    updateUrl(); // URLも更新
+    });
+
+    document.getElementById("E.G.Oreset3").addEventListener("click", () => {
+    document.querySelectorAll(".status").forEach(statusDiv => {
+    const img = statusDiv.querySelector(".status-img");
+    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+
+    if (id >= 13001 && id < 25000) {
+      img.src = `${baseImageUrl}limbus${id}.3.png`;
+      img.alt = 3;
+    } 
+    });
+    updateUrl(); // URLも更新
+    });
+
+    document.getElementById("人格reset4").addEventListener("click", () => {
+    document.querySelectorAll(".status").forEach(statusDiv => {
+    const img = statusDiv.querySelector(".status-img");
+    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+
+    if (id >= 1001 && id < 13000) {
+      img.src = `${baseImageUrl}limbus${id}.4.png`;
+      img.alt = 4;
+    } 
+    });
+    updateUrl(); // URLも更新
+    });
+
+    document.getElementById("E.G.Oreset4").addEventListener("click", () => {
+    document.querySelectorAll(".status").forEach(statusDiv => {
+    const img = statusDiv.querySelector(".status-img");
+    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+
+    if (id >= 13001 && id < 25000) {
+      img.src = `${baseImageUrl}limbus${id}.4.png`;
+      img.alt = 4;
+    } 
+    });
+    updateUrl(); // URLも更新
+    });
+
+
+
     function adjustTextareaHeight() {
     const textarea = document.getElementById('shareUrl');
     
