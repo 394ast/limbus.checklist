@@ -75,14 +75,14 @@
   <p>画像をクリックして強化段階を変更できます。<br>人格は同期化段階に合わせて画像も変わります。<br>実装順に並んでいます。<br>一番下に共有用URLが表示されます。</p>
   <p><button id="reset0">初期人格E.G.Oのみ所持</button></p>
   <div id="buttons-container">
-    <button id="人格reset1">人格を全て同期1に</button>
-    <button id="E.G.Oreset1">E.G.Oを全て解析1に</button>
-    <button id="人格reset2">人格を全て同期2に</button>
-    <button id="E.G.Oreset2">E.G.Oを全て解析2に</button>
-    <button id="人格reset3">人格を全て同期3に</button>
-    <button id="E.G.Oreset3">E.G.Oを全て解析3に</button>
-    <button id="人格reset4">人格を全て同期4に</button>
-    <button id="E.G.Oreset4">E.G.Oを全て解析4に</button>
+    <button id="Identitie-reset1">人格を全て同期1に</button>
+    <button id="E.G.O-reset1">E.G.Oを全て解析1に</button>
+    <button id="Identitie-reset2">人格を全て同期2に</button>
+    <button id="E.G.O-reset2">E.G.Oを全て解析2に</button>
+    <button id="Identitie-reset3">人格を全て同期3に</button>
+    <button id="E.G.O-reset3">E.G.Oを全て解析3に</button>
+    <button id="Identitie-reset4">人格を全て同期4に</button>
+    <button id="E.G.O-reset4">E.G.Oを全て解析4に</button>
   </div>
   <br>
   <div class="checklist-container" data-group="1"></div>
@@ -307,111 +307,41 @@
     updateUrl(); // URLも更新
     });
 
-    document.getElementById("人格reset1").addEventListener("click", () => {
+    const  Identitiereset = (stage) => {
     document.querySelectorAll(".status").forEach(statusDiv => {
     const img = statusDiv.querySelector(".status-img");
     const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
 
     if (id >= 1001 && id < 13000) {
-      img.src = `${baseImageUrl}limbus${id}.1.png`;
-      img.alt = 1;
-    } 
+      img.src = `${baseImageUrl}limbus${id}.${stage}.png`;
+      img.alt = stage;
+    }
     });
     updateUrl(); // URLも更新
-    });
+    };
 
-    document.getElementById("E.G.Oreset1").addEventListener("click", () => {
+    document.getElementById("Identitie-reset1").addEventListener("click", () => Identitiereset(1));
+    document.getElementById("Identitie-reset2").addEventListener("click", () => Identitiereset(2));
+    document.getElementById("Identitie-reset3").addEventListener("click", () => Identitiereset(3));
+    document.getElementById("Identitie-reset4").addEventListener("click", () => Identitiereset(4));
+    
+    const  EGOreset = (stage) => {
     document.querySelectorAll(".status").forEach(statusDiv => {
     const img = statusDiv.querySelector(".status-img");
     const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
 
     if (id >= 13001 && id < 25000) {
-      img.src = `${baseImageUrl}limbus${id}.1.png`;
-      img.alt = 1;
-    } 
+      img.src = `${baseImageUrl}limbus${id}.${stage}.png`;
+      img.alt = stage;
+    }
     });
     updateUrl(); // URLも更新
-    });
+    };
 
-    document.getElementById("人格reset2").addEventListener("click", () => {
-    document.querySelectorAll(".status").forEach(statusDiv => {
-    const img = statusDiv.querySelector(".status-img");
-    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
-
-    if (id >= 1001 && id < 13000) {
-      img.src = `${baseImageUrl}limbus${id}.2.png`;
-      img.alt = 2;
-    } 
-    });
-    updateUrl(); // URLも更新
-    });
-
-    document.getElementById("E.G.Oreset2").addEventListener("click", () => {
-    document.querySelectorAll(".status").forEach(statusDiv => {
-    const img = statusDiv.querySelector(".status-img");
-    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
-
-    if (id >= 13001 && id < 25000) {
-      img.src = `${baseImageUrl}limbus${id}.2.png`;
-      img.alt = 2;
-    } 
-    });
-    updateUrl(); // URLも更新
-    });
-
-    document.getElementById("人格reset3").addEventListener("click", () => {
-    document.querySelectorAll(".status").forEach(statusDiv => {
-    const img = statusDiv.querySelector(".status-img");
-    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
-
-    if (id >= 1001 && id < 13000) {
-      img.src = `${baseImageUrl}limbus${id}.3.png`;
-      img.alt = 3;
-    } 
-    });
-    updateUrl(); // URLも更新
-    });
-
-    document.getElementById("E.G.Oreset3").addEventListener("click", () => {
-    document.querySelectorAll(".status").forEach(statusDiv => {
-    const img = statusDiv.querySelector(".status-img");
-    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
-
-    if (id >= 13001 && id < 25000) {
-      img.src = `${baseImageUrl}limbus${id}.3.png`;
-      img.alt = 3;
-    } 
-    });
-    updateUrl(); // URLも更新
-    });
-
-    document.getElementById("人格reset4").addEventListener("click", () => {
-    document.querySelectorAll(".status").forEach(statusDiv => {
-    const img = statusDiv.querySelector(".status-img");
-    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
-
-    if (id >= 1001 && id < 13000) {
-      img.src = `${baseImageUrl}limbus${id}.4.png`;
-      img.alt = 4;
-    } 
-    });
-    updateUrl(); // URLも更新
-    });
-
-    document.getElementById("E.G.Oreset4").addEventListener("click", () => {
-    document.querySelectorAll(".status").forEach(statusDiv => {
-    const img = statusDiv.querySelector(".status-img");
-    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
-
-    if (id >= 13001 && id < 25000) {
-      img.src = `${baseImageUrl}limbus${id}.4.png`;
-      img.alt = 4;
-    } 
-    });
-    updateUrl(); // URLも更新
-    });
-
-
+    document.getElementById("E.G.O-reset1").addEventListener("click", () => EGOreset(1));
+    document.getElementById("E.G.O-reset2").addEventListener("click", () => EGOreset(2));
+    document.getElementById("E.G.O-reset3").addEventListener("click", () => EGOreset(3));
+    document.getElementById("E.G.O-reset4").addEventListener("click", () => EGOreset(4));
 
     function adjustTextareaHeight() {
     const textarea = document.getElementById('shareUrl');
