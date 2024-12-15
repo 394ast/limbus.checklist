@@ -205,7 +205,7 @@
       adjustTextareaHeight(); // テキストエリアの高さを更新
     }
 
-    // 圧縮関数（ランレングス圧縮）
+     // 圧縮関数（ランレングス圧縮）
     function runLengthEncode(data) {
       let result = '';
       let count = 1;
@@ -213,11 +213,14 @@
         if (data[i] === data[i - 1]) {
           count++;
         } else {
-          result += (count < 10 ? '0' : '') + count + data[i - 1]; // 2桁に変更
+          result += count.toString(36) + data[i - 1]; // 36進数で表記
           count = 1;
         }
       }
-      result += (count < 10 ? '0' : '') + count + data[data.length - 1];
+      // 最後の部分を追加、最後の文字が'0'の場合は追加しない
+      if (data[data.length - 1] !== '0') {
+      result += count.toString(36) + data[data.length - 1];
+      }
       return result;
     }
 
@@ -226,12 +229,12 @@
       let result = [];
       let i = 0;
       while (i < encodedData.length) {
-        let count = parseInt(encodedData[i] + encodedData[i + 1]); // 2桁に対応
-        let state = encodedData[i + 2];
+        let count = parseInt(encodedData[i],36); // 
+        let state = encodedData[i + 1];
         for (let j = 0; j < count; j++) {
           result.push(state);
         }
-        i += 3; // 次のペアへ
+        i += 2; // 次のペアへ
       }
       return result;
     }
@@ -241,7 +244,11 @@
       const separator = '-';
       const groupStates = Object.entries(groupSettings).map(([group, { count }], index) => {
         const start = Object.values(groupSettings).slice(0, index).reduce((sum, g) => sum + g.count, 0);
-        return runLengthEncode(states.slice(start, start + count));
+        const groupData = states.slice(start, start + count).join('');
+        // 圧縮後の長さが元の長さ以上の場合はそのまま元データを使用
+        const compressedDataR = `R${runLengthEncode(groupData)}`;
+        const compressedData0 = groupData.replace(/0+$/, '');
+        return compressedDataR.length < compressedData0.length ? compressedDataR : compressedData0
       });
       return groupStates.join(separator);
     }
@@ -255,14 +262,21 @@
       groups.forEach((group, index) => {
         const { count } = Object.values(groupSettings)[index];
         if (group) {
-          const decoded = runLengthDecode(group);
-          while (decoded.length < count) {
-            decoded.push("0"); // 不足分を補完
+          let decoded;
+          // group の先頭が 'R' の場合
+          if (group.startsWith("R")) {
+          const modifiedGroup = group.slice(1); // 先頭の 'R' を削除
+          decoded = runLengthDecode(modifiedGroup);
+          } else {
+          decoded = [...group]; // group をそのまま文字配列に変換
           }
-          decompressedStates.push(...decoded);
+          // decoded の長さを count に合わせる
+          while (decoded.length < count) {
+          decoded.push("0"); // 不足分を補完
+          }
+        decompressedStates.push(...decoded);
         }
       });
-
       return { result: decompressedStates };
     }
 
