@@ -260,23 +260,25 @@
       const decompressedStates = [];
 
       groups.forEach((group, index) => {
-        const { count } = Object.values(groupSettings)[index];
-        if (group) {
-          let decoded;
-          // group の先頭が 'R' の場合
-          if (group.startsWith("R")) {
-          const modifiedGroup = group.slice(1); // 先頭の 'R' を削除
-          decoded = runLengthDecode(modifiedGroup);
-          } else {
-          decoded = [...group]; // group をそのまま文字配列に変換
-          }
-          // decoded の長さを count に合わせる
-          while (decoded.length < count) {
-          decoded.push("0"); // 不足分を補完
-          }
-        decompressedStates.push(...decoded);
-        }
+      const { count } = Object.values(groupSettings)[index];
+      let decoded = [];
+
+      if (group) { // 空でないグループのみ処理
+      if (group.startsWith("R")) { // group の先頭が 'R' の場合
+        const modifiedGroup = group.slice(1); // 先頭の 'R' を削除
+        decoded = runLengthDecode(modifiedGroup);
+      } else {
+        decoded = [...group]; // group をそのまま文字配列に変換
+      }
+      }
+
+      // decoded の長さを count に合わせる
+      while (decoded.length < count) {
+      decoded.push("0"); // 不足分を補完
+      }
+      decompressedStates.push(...decoded);
       });
+
       return { result: decompressedStates };
     }
 
