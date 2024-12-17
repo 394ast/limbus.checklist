@@ -112,6 +112,7 @@
   <div class="checklist-container" data-group="24"></div>
 
   <p>共有用URL: <textarea id="shareUrl" readonly></textarea></p>
+  <button id="copyButton">共有用URLをコピー</button>
 
   <script>
   document.addEventListener("DOMContentLoaded", () => {
@@ -169,7 +170,7 @@
 
     // 状態復元処理
     const urlParams = new URLSearchParams(window.location.search);
-    const statesParam = urlParams.get("states");
+    const statesParam = urlParams.get("states"); // クエリパラメータを取得
     if (statesParam) {
       const { result: decompressedStates } = decompressData(statesParam); // 解凍処理
       restoreState(decompressedStates);
@@ -192,18 +193,19 @@
       });
     });
 
-    // URL更新関数
+    //URL更新関数
     function updateUrl() {
-      const states = Array.from(document.querySelectorAll(".status"))
+        const states = Array.from(document.querySelectorAll(".status"))
         .map(div => div.querySelector(".status-img").alt);
 
-      const compressedData = compressData(states);
-      const encodedData = btoa(compressedData); // Base64エンコード
-      const baseUrl = "https://394ast.github.io/limbus.checklist/";
-      shareUrl.value = `${baseUrl}?states=${encodedData}`;
+        const compressedData = compressData(states);
+        const encodedData = toUrlSafeBase64(compressedData); // URLsafeBase64エンコード
+        const baseUrl = "https://394ast.github.io/limbus.checklist/";
+        shareUrl.value = `${baseUrl}?states=${encodedData}`;
 
-      adjustTextareaHeight(); // テキストエリアの高さを更新
+        adjustTextareaHeight(); // テキストエリアの高さを更新
     }
+
 
      // 圧縮関数（ランレングス圧縮）
     function runLengthEncode(data) {
@@ -255,7 +257,7 @@
 
     // 解凍処理
     function decompressData(encodedData) {
-      const decodedData = atob(encodedData); // Base64デコード
+      const decodedData = fromUrlSafeBase64(encodedData); // URLsafeBase64デコード
       const groups = decodedData.split('-');
       const decompressedStates = [];
 
@@ -281,6 +283,7 @@
 
       return { result: decompressedStates };
     }
+
 
     // 状態を復元する関数 
     function restoreState(states) {
@@ -371,6 +374,37 @@
 
     // ページのリサイズ時にも調整
     window.addEventListener('resize', adjustTextareaHeight);
+
+    // URLセーフBase64エンコード関数
+    function toUrlSafeBase64(data) {
+      return btoa(data)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, ''); // 末尾の = を削除
+    }
+
+    // URLセーフBase64デコード関数
+    function fromUrlSafeBase64(data) {
+      data = data.replace(/-/g, '+').replace(/_/g, '/');
+      // パディングが不足している場合は補完
+      while (data.length % 4) {
+      data += '=';
+      }
+    return atob(data);
+    }
+    
+    // コピーボタンをクリックしたときの処理
+    document.getElementById('copyButton').addEventListener('click', async function () {
+      const textarea = document.getElementById('shareUrl');
+      const url = textarea.value; // テキストエリアの内容を取得
+      try {
+      // Clipboard APIを使用してクリップボードにコピー
+      await navigator.clipboard.writeText(url);
+      alert('共有用URLをコピーしました');
+      } catch (err) {
+      alert('コピーに失敗しました。');
+      }
+    });
 
   });
   </script>
