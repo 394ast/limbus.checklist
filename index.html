@@ -110,44 +110,47 @@
   <div class="checklist-container" data-group="22"></div>
   <div class="checklist-container" data-group="23"></div>
   <div class="checklist-container" data-group="24"></div>
+  <br>
+  <button id="shortenButton">URLを短縮する</button>
+  <p>短縮URL: <textarea id="shortenedUrl" readonly></textarea></p>
 
   <p>共有用URL: <textarea id="shareUrl" readonly></textarea></p>
   <button id="copyButton">共有用URLをコピー</button>
 
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const baseImageUrl = "https://raw.githubusercontent.com/394ast/limbus.checklist/main/";
-    const defaultState = 4; // 初期状態
-    const maxState = 4; // 状態の最大値
-    const groupSettings = {
-      1: { startId: 1001, count: 10 },
-      2: { startId: 2001, count: 10 },
-      3: { startId: 3001, count: 10 },
-      4: { startId: 4001, count: 10 },
-      5: { startId: 5001, count: 11 },
-      6: { startId: 6001, count: 10 },
-      7: { startId: 7001, count: 10 },
-      8: { startId: 8001, count: 10 },
-      9: { startId: 9001, count: 11 },
-      10: { startId: 10001, count: 11 },
-      11: { startId: 11001, count: 11 },
-      12: { startId: 12001, count: 10 },
-      13: { startId: 13001, count: 7 },
-      14: { startId: 14001, count: 7 },
-      15: { startId: 15001, count: 7 },
-      16: { startId: 16001, count: 7 },
-      17: { startId: 17001, count: 7 },
-      18: { startId: 18001, count: 7 },
-      19: { startId: 19001, count: 8 },
-      20: { startId: 20001, count: 7 },
-      21: { startId: 21001, count: 7 },
-      22: { startId: 22001, count: 7 },
-      23: { startId: 23001, count: 7 },
-      24: { startId: 24001, count: 7 },
-    }; // 新規で追加するときはここを変更する
+    document.addEventListener("DOMContentLoaded", () => {
+     const baseImageUrl = "https://raw.githubusercontent.com/394ast/limbus.checklist/main/";
+     const defaultState = 4; // 初期状態
+     const maxState = 4; // 状態の最大値
+     const groupSettings = {
+     1: { startId: 1001, count: 10 },
+     2: { startId: 2001, count: 10 },
+     3: { startId: 3001, count: 10 },
+     4: { startId: 4001, count: 10 },
+     5: { startId: 5001, count: 11 },
+     6: { startId: 6001, count: 10 },
+     7: { startId: 7001, count: 10 },
+     8: { startId: 8001, count: 10 },
+     9: { startId: 9001, count: 11 },
+     10: { startId: 10001, count: 11 },
+     11: { startId: 11001, count: 11 },
+     12: { startId: 12001, count: 10 },
+     13: { startId: 13001, count: 7 },
+     14: { startId: 14001, count: 7 },
+     15: { startId: 15001, count: 7 },
+     16: { startId: 16001, count: 7 },
+     17: { startId: 17001, count: 7 },
+     18: { startId: 18001, count: 7 },
+     19: { startId: 19001, count: 8 },
+     20: { startId: 20001, count: 7 },
+     21: { startId: 21001, count: 7 },
+     22: { startId: 22001, count: 7 },
+     23: { startId: 23001, count: 7 },
+     24: { startId: 24001, count: 7 },
+     }; // 新規で追加するときはここを変更する
 
-    // 各コンテナに要素を生成
-    document.querySelectorAll(".checklist-container").forEach(container => {
+     // 各コンテナに要素を生成
+     document.querySelectorAll(".checklist-container").forEach(container => {
       const group = container.getAttribute("data-group");
       const { startId, count } = groupSettings[group];
 
@@ -164,23 +167,23 @@
         statusDiv.appendChild(img);
         container.appendChild(statusDiv);
       }
-    });
+     });
 
-    const shareUrl = document.getElementById("shareUrl");
+     const shareUrl = document.getElementById("shareUrl");
 
-    // 状態復元処理
-    const urlParams = new URLSearchParams(window.location.search);
-    const statesParam = urlParams.get("states"); // クエリパラメータを取得
-    if (statesParam) {
+     // 状態復元処理
+     const urlParams = new URLSearchParams(window.location.search);
+     const statesParam = urlParams.get("states"); // クエリパラメータを取得
+     if (statesParam) {
       const { result: decompressedStates } = decompressData(statesParam); // 解凍処理
       restoreState(decompressedStates);
-    }
+     }
     
-    // ページが読み込まれたときにもURLを更新
+     // ページが読み込まれたときにもURLを更新
       updateUrl();
 
-    // クリック時の状態変更とURL更新
-    document.querySelectorAll(".status").forEach(statusDiv => {
+     // クリック時の状態変更とURL更新
+     document.querySelectorAll(".status").forEach(statusDiv => {
       statusDiv.addEventListener("click", () => {
         const img = statusDiv.querySelector(".status-img");
         const id = statusDiv.getAttribute("data-id");
@@ -191,10 +194,10 @@
 
         updateUrl(); // URLを更新
       });
-    });
+     });
 
-    //URL更新関数
-    function updateUrl() {
+     //URL更新関数
+     function updateUrl() {
         const states = Array.from(document.querySelectorAll(".status"))
         .map(div => div.querySelector(".status-img").alt);
 
@@ -204,11 +207,11 @@
         shareUrl.value = `${baseUrl}?states=${encodedData}`;
 
         adjustTextareaHeight(); // テキストエリアの高さを更新
-    }
+     }
 
 
      // 圧縮関数（ランレングス圧縮）
-    function runLengthEncode(data) {
+     function runLengthEncode(data) {
       let result = '';
       let count = 1;
       for (let i = 1; i < data.length; i++) {
@@ -224,10 +227,10 @@
       result += count.toString(36) + data[data.length - 1];
       }
       return result;
-    }
+     }
 
-    // 解凍関数（ランレングス圧縮の逆）
-    function runLengthDecode(encodedData) {
+     // 解凍関数（ランレングス圧縮の逆）
+     function runLengthDecode(encodedData) {
       let result = [];
       let i = 0;
       while (i < encodedData.length) {
@@ -239,10 +242,10 @@
         i += 2; // 次のペアへ
       }
       return result;
-    }
+     }
 
-    // 圧縮処理
-    function compressData(states) {
+     // 圧縮処理
+     function compressData(states) {
       const separator = '-';
       const groupStates = Object.entries(groupSettings).map(([group, { count }], index) => {
         const start = Object.values(groupSettings).slice(0, index).reduce((sum, g) => sum + g.count, 0);
@@ -253,10 +256,10 @@
         return compressedDataR.length < compressedData0.length ? compressedDataR : compressedData0
       });
       return groupStates.join(separator);
-    }
+     }
 
-    // 解凍処理
-    function decompressData(encodedData) {
+     // 解凍処理
+     function decompressData(encodedData) {
       const decodedData = fromUrlSafeBase64(encodedData); // URLsafeBase64デコード
       const groups = decodedData.split('-');
       const decompressedStates = [];
@@ -282,11 +285,11 @@
       });
 
       return { result: decompressedStates };
-    }
+     }
 
 
-    // 状態を復元する関数 
-    function restoreState(states) {
+     // 状態を復元する関数 
+     function restoreState(states) {
       let idx = 0;
 
       Object.entries(groupSettings).forEach(([group, { startId, count }]) => {
@@ -305,26 +308,26 @@
           }
         }
       });
-    }
+     }
 
-    // 全てボタンの処理
-    document.getElementById("reset0").addEventListener("click", () => {
-    document.querySelectorAll(".status").forEach(statusDiv => {
-    const img = statusDiv.querySelector(".status-img");
-    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+     // 全てボタンの処理
+     document.getElementById("reset0").addEventListener("click", () => {
+     document.querySelectorAll(".status").forEach(statusDiv => {
+     const img = statusDiv.querySelector(".status-img");
+     const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
 
-    if (id % 1000 === 1 && id >= 1001 && id <= 24001) {
+     if (id % 1000 === 1 && id >= 1001 && id <= 24001) {
       // IDが1001, 2001, ..., 24001の規則に一致する場合
       img.src = `${baseImageUrl}limbus${id}.1.png`;
       img.alt = 1;
-    } else {
+     } else {
       // その他のIDは状態を0に変更
       img.src = `${baseImageUrl}limbus${id}.0.png`;
       img.alt = 0;
-    }
-    });
-    updateUrl(); // URLも更新
-    });
+     }
+     });
+     updateUrl(); // URLも更新
+     });
 
     const  Identitiereset = (stage) => {
     document.querySelectorAll(".status").forEach(statusDiv => {
@@ -406,6 +409,37 @@
       }
     });
 
+    //短縮ボタンの処理
+    document.getElementById("shortenButton").addEventListener("click", async function () {
+      const shareUrlElement = document.getElementById("shareUrl");
+      const shortenedUrlElement = document.getElementById("shortenedUrl");
+      const shareUrl = shareUrlElement.value.trim(); // テキストエリアの値を取得
+
+      // URLが空の場合はエラーメッセージをアラート表示
+      if (!shareUrl) {
+        alert("共有用URLが設定されていません。");
+        return;
+        }
+
+        try {
+          // is.gd APIを呼び出してURLを短縮
+          const response = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(shareUrl)}`);
+                
+           if (response.ok) {
+              const shortUrl = await response.text();
+                // 短縮されたURLを別のテキストエリアに表示
+                shortenedUrlElement.value = shortUrl;
+              alert("URLを短縮しました！");
+                } else {
+                    throw new Error("URLの短縮に失敗しました。");
+                }
+            } catch (error) {
+                // エラーをアラート表示
+                alert(`エラー: ${error.message}`);
+            }
+        });
+
+    
   });
   </script>
 
