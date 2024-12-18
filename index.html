@@ -206,6 +206,12 @@
         const baseUrl = "https://394ast.github.io/limbus.checklist/";
         shareUrl.value = `${baseUrl}?states=${encodedData}`;
 
+       // 短縮URLテキストボックスを空にする
+        const shortenedUrlTextbox = document.getElementById("shortenedUrl");
+        if (shortenedUrlTextbox) {
+        shortenedUrlTextbox.value = ""; // テキストボックスを空にする
+        }
+
         adjustTextareaHeight(); // テキストエリアの高さを更新
      }
 
