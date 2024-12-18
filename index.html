@@ -434,7 +434,16 @@
               const shortUrl = await response.text();
                 // 短縮されたURLを別のテキストエリアに表示
                 shortenedUrlElement.value = shortUrl;
-              alert("URLを短縮しました！");
+
+                // クリップボードにコピー
+                try {
+                await navigator.clipboard.writeText(shortUrl);
+                alert("URLを短縮してコピーしました");
+                } catch (clipboardError) {
+                // クリップボードコピーに失敗した場合
+                alert(`短縮は完了しましたが、コピーに失敗しました: ${clipboardError.message}`);
+                }
+              
                 } else {
                     throw new Error("URLの短縮に失敗しました。");
                 }
