@@ -423,7 +423,7 @@
 
         try {
           // is.gd APIを呼び出してURLを短縮
-          const response = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(shareUrl)}`);
+          const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(shareUrl)}`);
                 
            if (response.ok) {
               const shortUrl = await response.text();
