@@ -111,9 +111,10 @@
   <div class="checklist-container" data-group="23"></div>
   <div class="checklist-container" data-group="24"></div>
   <br>
-  <button id="shortenButton">URLを短縮する</button>
+  <button id="shortenButton">URLを短縮してコピー</button>
   <p>短縮URL: <textarea id="shortenedUrl" readonly></textarea></p>
-
+  <br>
+  <p>短縮URLが利用できないときは、こちらを利用してください。
   <p>共有用URL: <textarea id="shareUrl" readonly></textarea></p>
   <button id="copyButton">共有用URLをコピー</button>
 
@@ -206,7 +207,7 @@
         const baseUrl = "https://394ast.github.io/limbus.checklist/";
         shareUrl.value = `${baseUrl}?states=${encodedData}`;
 
-       // 短縮URLテキストボックスを空にする
+        // 短縮URLテキストボックスを空にする
         const shortenedUrlTextbox = document.getElementById("shortenedUrl");
         if (shortenedUrlTextbox) {
         shortenedUrlTextbox.value = ""; // テキストボックスを空にする
@@ -316,7 +317,7 @@
       });
      }
 
-     // 全てボタンの処理
+     // 初期のみボタンの処理
      document.getElementById("reset0").addEventListener("click", () => {
      document.querySelectorAll(".status").forEach(statusDiv => {
      const img = statusDiv.querySelector(".status-img");
@@ -335,91 +336,78 @@
      updateUrl(); // URLも更新
      });
 
-    const  Identitiereset = (stage) => {
-    document.querySelectorAll(".status").forEach(statusDiv => {
-    const img = statusDiv.querySelector(".status-img");
-    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+     const  Identitiereset = (stage) => {
+     document.querySelectorAll(".status").forEach(statusDiv => {
+     const img = statusDiv.querySelector(".status-img");
+     const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
 
-    if (id >= 1001 && id < 13000) {
+     if (id >= 1001 && id < 13000) {
       img.src = `${baseImageUrl}?text=${stage}`;
       img.alt = stage;
-    }
-    });
-    updateUrl(); // URLも更新
-    };
+     }
+     });
+     updateUrl(); // URLも更新
+     };
 
-    document.getElementById("Identitie-reset1").addEventListener("click", () => Identitiereset(1));
-    document.getElementById("Identitie-reset2").addEventListener("click", () => Identitiereset(2));
-    document.getElementById("Identitie-reset3").addEventListener("click", () => Identitiereset(3));
-    document.getElementById("Identitie-reset4").addEventListener("click", () => Identitiereset(4));
+     document.getElementById("Identitie-reset1").addEventListener("click", () => Identitiereset(1));
+     document.getElementById("Identitie-reset2").addEventListener("click", () => Identitiereset(2));
+     document.getElementById("Identitie-reset3").addEventListener("click", () => Identitiereset(3));
+     document.getElementById("Identitie-reset4").addEventListener("click", () => Identitiereset(4));
     
-    const  EGOreset = (stage) => {
-    document.querySelectorAll(".status").forEach(statusDiv => {
-    const img = statusDiv.querySelector(".status-img");
-    const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
+     const  EGOreset = (stage) => {
+     document.querySelectorAll(".status").forEach(statusDiv => {
+     const img = statusDiv.querySelector(".status-img");
+     const id = parseInt(statusDiv.getAttribute("data-id"), 10); // 数値に変換
 
-    if (id >= 13001 && id < 25000) {
+     if (id >= 13001 && id < 25000) {
       img.src = `${baseImageUrl}?text=${stage}`;
       img.alt = stage;
-    }
-    });
-    updateUrl(); // URLも更新
-    };
+     }
+     });
+     updateUrl(); // URLも更新
+     };
 
-    document.getElementById("E.G.O-reset1").addEventListener("click", () => EGOreset(1));
-    document.getElementById("E.G.O-reset2").addEventListener("click", () => EGOreset(2));
-    document.getElementById("E.G.O-reset3").addEventListener("click", () => EGOreset(3));
-    document.getElementById("E.G.O-reset4").addEventListener("click", () => EGOreset(4));
+     document.getElementById("E.G.O-reset1").addEventListener("click", () => EGOreset(1));
+     document.getElementById("E.G.O-reset2").addEventListener("click", () => EGOreset(2));
+     document.getElementById("E.G.O-reset3").addEventListener("click", () => EGOreset(3));
+     document.getElementById("E.G.O-reset4").addEventListener("click", () => EGOreset(4));
 
-    function adjustTextareaHeight() {
-    const textarea = document.getElementById('shareUrl');
+     function adjustTextareaHeight() {
+     const textarea = document.getElementById('shareUrl');
     
-    // 高さを自動的にリセット
-    textarea.style.height = 'auto'; 
+     // 高さを自動的にリセット
+     textarea.style.height = 'auto'; 
     
-    // テキストエリアの内容に基づいて高さを調整
-    textarea.style.height = textarea.scrollHeight + 'px';
-    }
+     // テキストエリアの内容に基づいて高さを調整
+     textarea.style.height = textarea.scrollHeight + 'px';
+     }
 
-    // ページのリサイズ時にも調整
-    window.addEventListener('resize', adjustTextareaHeight);
+     // ページのリサイズ時にも調整
+     window.addEventListener('resize', adjustTextareaHeight);
 
-    // URLセーフBase64エンコード関数
-    function toUrlSafeBase64(data) {
+     // URLセーフBase64エンコード関数
+     function toUrlSafeBase64(data) {
       return btoa(data)
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
       .replace(/=+$/, ''); // 末尾の = を削除
-    }
+     }
 
-    // URLセーフBase64デコード関数
-    function fromUrlSafeBase64(data) {
+     // URLセーフBase64デコード関数
+     function fromUrlSafeBase64(data) {
       data = data.replace(/-/g, '+').replace(/_/g, '/');
       // パディングが不足している場合は補完
       while (data.length % 4) {
       data += '=';
       }
-    return atob(data);
-    }
-    
-    // コピーボタンをクリックしたときの処理
-    document.getElementById('copyButton').addEventListener('click', async function () {
-      const textarea = document.getElementById('shareUrl');
-      const url = textarea.value; // テキストエリアの内容を取得
-      try {
-      // Clipboard APIを使用してクリップボードにコピー
-      await navigator.clipboard.writeText(url);
-      alert('共有用URLをコピーしました');
-      } catch (err) {
-      alert('コピーに失敗しました。');
-      }
-    });
+     return atob(data);
+     }
 
-    //短縮ボタンの処理
+     //短縮ボタンの処理
 
-    let isProcessing = false;
+     let isProcessing = false;
 
-    document.getElementById("shortenButton").addEventListener("click", async function () {
+     document.getElementById("shortenButton").addEventListener("click", async function () {
       // 既に処理中の場合は無視
       if (isProcessing) return;
 
@@ -458,9 +446,21 @@
             setTimeout(() => {
             isProcessing = false;
             }, 1000);
-            }
-        });
+        }
+      });
 
+     // 元URLのコピーボタンをクリックしたときの処理
+     document.getElementById('copyButton').addEventListener('click', async function () {
+      const textarea = document.getElementById('shareUrl');
+      const url = textarea.value; // テキストエリアの内容を取得
+      try {
+      // Clipboard APIを使用してクリップボードにコピー
+      await navigator.clipboard.writeText(url);
+      alert('共有用URLをコピーしました');
+      } catch (err) {
+      alert('コピーに失敗しました。');
+      }
+     });
 
     
   });
