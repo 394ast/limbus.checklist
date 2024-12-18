@@ -28,7 +28,7 @@
       border: none;
       text-align: center;
       cursor: pointer;
-      display: inline-block;
+      display: block;
       box-sizing: border-box;
       margin: 0;
     }
@@ -43,6 +43,10 @@
       cursor: pointer;
       width: 150px;
       margin-top: 20px;
+    }
+
+    .lv-input {
+    width: 50px;
     }
 
     textarea {
@@ -124,7 +128,7 @@
      const baseImageUrl = "https://via.placeholder.com/100";
      const defaultState = 4; // 初期状態
      const maxState = 4; // 状態の最大値
-     const defaultLv = 0; //Lv機能を有効にしないとき
+     const defaultLv = 0; //未所持を想定
      const lvCheckbox = document.getElementById("enableLv");
      const groupSettings = {
      1: { startId: 1001, count: 10 },
@@ -158,38 +162,48 @@
      const group = container.dataset.group;
      const { startId, count } = groupSettings[group];
 
-     for (let i = startId; i < startId + count; i++) {
-     const statusDiv = document.createElement("div");
-     statusDiv.className = "status";
-     statusDiv.dataset.id = i; 
+      for (let i = startId; i < startId + count; i++) {
+      const statusDiv = document.createElement("div");
+      statusDiv.className = "status";
+      statusDiv.dataset.id = i; 
 
-     const img = document.createElement("img");
-     img.src = `${baseImageUrl}?text=${defaultState}`;
-     img.alt = defaultState;
-     img.className = "status-img";
-     img.dataset.id = i; 
+      const img = document.createElement("img");
+      img.src = `${baseImageUrl}?text=${defaultState}`;
+      img.alt = defaultState;
+      img.className = "status-img";
+      img.dataset.id = i; 
 
-     const lvInput = document.createElement("input");
-     lvInput.type = "number";
-     lvInput.className = "lv-input";
-     lvInput.value = defaultLv; 
-     lvInput.min = 0; // 最小値を設定
-     lvInput.title = "Lvを入力してください"; // ヒント
-     lvInput.dataset.id = i; // data-idを直接設定
+      const lvContainer = document.createElement("div");
+      lvContainer.className = "lv-container";
 
-     // チェックボックスがオンのときのみ表示
-     if (lvCheckbox.checked) {
-      lvInput.style.display = "inline";
-     } else {
-      lvInput.style.display = "none";
-     }
+      const lvLabel = document.createElement("span");
+      lvLabel.textContent = "Lv:";
+      lvContainer.appendChild(lvLabel);
 
-     statusDiv.appendChild(img);
-     statusDiv.appendChild(lvInput);
-     container.appendChild(statusDiv);
+      const lvInput = document.createElement("input");
+      lvInput.type = "number";
+      lvInput.className = "lv-input";
+      lvInput.value = defaultLv; 
+      lvInput.min = 0; // 最小値を設定
+      lvInput.title = "Lvを入力してください"; // ユーザーへのヒント
+      lvInput.dataset.id = i; 
+      lvContainer.appendChild(lvInput);
+
+      //IdentitieのみlvContainerを追加
+      if (i <= 13000) {
+        // チェックボックスがオンのときのみ表示
+        if (lvCheckbox.checked) {
+        lvContainer.style.display = "block";
+        } else {
+        lvContainer.style.display = "none";
+        }
+        container.appendChild(lvContainer);
+      }
+
+      statusDiv.appendChild(img);
+      container.appendChild(statusDiv);
       }
      });
-
 
      const shareUrl = document.getElementById("shareUrl");
 
@@ -207,6 +221,11 @@
      // クリック時の状態変更とURL更新
      document.querySelectorAll(".status").forEach(statusDiv => {
       statusDiv.addEventListener("click", () => {
+        // クリックされたのがinput要素だった場合、親のクリックイベントを発火させない
+        if (event.target.tagName === "INPUT") {
+        event.stopPropagation();
+        return;
+        }
         const img = statusDiv.querySelector(".status-img");
         const id = statusDiv.dataset.id;
         let currentState = parseInt(img.alt, 10) || 0; // alt属性から現在の状態を取得
@@ -216,6 +235,15 @@
 
         updateUrl(); // URLを更新
       });
+     });
+     
+     // レベル機能を有効にするときの処理
+     lvCheckbox.addEventListener("change", () => {
+      const displayStyle = lvCheckbox.checked ? "block" : "none";
+       // lv-containerを持っている要素だけ表示/非表示を切り替える
+       document.querySelectorAll(".lv-container").forEach(container => {
+       container.style.display = displayStyle;
+       });
      });
 
      //URL更新関数
