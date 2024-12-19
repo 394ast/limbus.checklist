@@ -371,7 +371,7 @@
 
         function decompresslvData(lvParam){
             const parts = lvParam.split('-');
-            const base32 = parts[0];
+            let base32 = parts[0];
             const remainder16 = parts[1]; 
             let base16 = "";
             while(base32.length >=4){
