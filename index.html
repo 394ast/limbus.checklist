@@ -193,6 +193,8 @@
         if(lvParam){
             document.getElementById("enableLv").checked = true;
             lvCheckbox.dispatchEvent(new Event('change')); // 切り替えイベントを発火
+            const decompressedlv = decompresslvData(lvParam);
+            restorelv(decompressedlv);
         }
 
 
@@ -245,7 +247,7 @@
                 url += `&lv=${compressedlvData}`;
             }
 
-            // クラス名でテキストエリアを取得
+            // クラス名でテキストエリアを取得して書き換え
             const shareUrl = document.querySelector('.share-url-textarea');
             shareUrl.value = url;
 
@@ -317,8 +319,25 @@
                     lvValues.push(parseInt(lvInput.value).toString(16).padStart(2, '0'));
                 }
             });
-        return lvValues.join(""); 
+            let lvString = lvValues.join(""); 
+            let compressedlvData = "";
+            let leftover = "";
+            while (lvString.length >= 5) {
+                let chunk = lvString.slice(0, 5);
+                lvString = lvString.slice(5); // 残りの文字列を更新
+                // 16進数から10進数に変換
+                let decimal = parseInt(chunk, 16);
+                // 10進数から32進数に変換
+                let base32 = decimal.toString(32);
+                base32 = base32.padStart(4,'0'); // 4文字になるように
+                compressedlvData += base32;
+            } // 16進数5文字を32進数4文字に変換
+            // 余りを繋げる
+            leftover = lvString;
+            compressedlvData += `-${leftover}`;
+            return compressedlvData;
         }
+        
 
 
         // 解凍処理
@@ -351,6 +370,36 @@
             return decompressedImg;
         }
 
+        function decompresslvData(lvParam){
+            const parts = lvParam.split('');
+            const base32 = parts[0];
+            const remainder16 = parts[1]; 
+            let base16 = "";
+            while(base32.length >=4){
+                let chunk = base32.slice(0,4);
+                base32 = base32.slice(4); // 残りの文字列を更新
+                let decimal = parseInt(chunk, 32);
+                let push16 = decimal.toString(16);
+                push16 = push16.padStart(5, '0'); // 5文字になるように
+                base16 += push16
+            }
+            //余りを繋げる
+            base16 += remainder16
+
+            if (base16.length % 2 !== 0) {
+                alert("lvの共有にエラーが発生しました");
+            }
+
+            let decompressedlv = [];
+            for (let i = 0; i < base16.length; i += 2) {
+                let hexPair = base16.slice(i, i + 2); // 2文字を取り出す
+                let decimalValue = parseInt(hexPair, 16); // 16進数を10進数に変換
+                decompressedlv.push(decimalValue);
+            }
+        console.log(decompressedlv);
+        return decompressedlv;
+        }
+
     
         // 状態復元用関数 
         function restoreImg(decompressedImg){
@@ -370,6 +419,10 @@
                     }
                 }
             });
+        }
+
+        function restorelv(decompressedlv){
+
         }
 
         //resetボタンの処理
