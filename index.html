@@ -187,8 +187,8 @@
         const imgParam = urlParams.get("img");
         const lvParam = urlParams.get("lv")
         if(imgParam){
-            console.log("imgパラメータがあった");
-            console.log(imgParam);
+            const decompressedImg = decompressImgData(imgParam);
+            restoreImg(decompressedImg);
         }
         if(lvParam){
             console.log("lvパラメータがあった");
@@ -324,8 +324,36 @@
 
 
         // 解凍処理
-        function decompressData(encodedData) {
+        function decompressImgData(encodedImgData) {
+            //デコードは後で追加
+            const decodedImgData = encodedImgData
+            const groups = decodedImgData.split('-');
+            const decompressedImg = [];
+
+            groups.forEach((group, index) => {
+                const { groupCount } = Object.values(groupsData)[index];
+                let decoded = [];
+
+                if (group) { // 空でないグループのみ処理
+                    if (group.startsWith("R")) { // group の先頭が 'R' の場合
+                        const modifiedGroup = group.slice(1); // 先頭の 'R' を削除
+                        decoded = runLengthDecode(modifiedGroup);
+                    } else {
+                        decoded = [...group]; // group をそのまま文字配列に変換
+                    }
+                }
+
+                // decoded の長さを count に合わせる
+                while (decoded.length < groupCount) {
+                decoded.push("0"); // 不足分を補完
+                }
+                decompressedImg.push(...decoded);
+            });
+            console.log(decompressedImg);
+            return decompressedImg;
         }
+
+    
         // 状態復元用関数 
         function restoreState(states){
         }
