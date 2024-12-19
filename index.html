@@ -157,6 +157,7 @@
                     lvText.classList.add('lvtext');
                     const lvInput = document.createElement('input');
                     lvInput.type = 'number';
+                    lvInput.value = defaultLv;
                     lvInput.min = 0;
                     lvInput.max = 50; //レベル上限解放時はここを変更
                     lvInput.step = 1; //レベルは整数のみ
@@ -182,6 +183,19 @@
         });
 
         //状態復元処理
+        const urlParams = new URLSearchParams(window.location.search);
+        const imgParam = urlParams.get("img");
+        const lvParam = urlParams.get("lv")
+        if(imgParam){
+            console.log("imgパラメータがあった");
+            console.log(imgParam);
+        }
+        if(lvParam){
+            console.log("lvパラメータがあった");
+            console.log(lvParam);
+        }
+
+
         // ページが読み込まれたときにもURLを更新
         updateUrl();
 
@@ -220,12 +234,16 @@
         function updateUrl() {
             const enableLv = document.getElementById("enableLv").checked;
             const baseUrl = "https://394ast.github.io/limbus.checklist/";
-            const encodedimgData = "仮imgData"
+            const compressedimgData = compressimgData();
+            //後でエンコード処理を書く
+            const encodedimgData = compressedimgData;
             let url = `${baseUrl}?img=${encodedimgData}`;
     
             // lvが有効なら、lvのデータも追加
             if(enableLv){
-                const encodedlvData = "仮lvData"
+                const compressedlvData = compresslvData();
+                //後でエンコード処理を書く
+                const encodedlvData = compressedlvData;
                 url += `&lv=${encodedlvData}`;
             }
 
@@ -238,20 +256,132 @@
 
         // 圧縮関数（ランレングス圧縮）
         function runLengthEncode(data) {
+            let result = '';
+            let count = 1;
+            for (let i = 1; i < data.length; i++) {
+                if (data[i] === data[i - 1]) {
+                count++;
+            } else {
+                result += count.toString(36) + data[i - 1]; // 36進数で表記
+            count = 1;
+            }
+            }
+        // 最後の部分を追加、最後の文字が'0'の場合は追加しない
+            if (data[data.length - 1] !== '0') {
+            result += count.toString(36) + data[data.length - 1];
+            }
+        return result;
         }
+        
         // 解凍関数（ランレングス圧縮の逆）
         function runLengthDecode(encodedData) {
+            let result = [];
+            let i = 0;
+            while (i < encodedData.length) {
+                let count = parseInt(encodedData[i],36); // 
+                let state = encodedData[i + 1];
+                for (let j = 0; j < count; j++) {
+                    result.push(state);
+                }
+                i += 2; // 次のペアへ
+            }
+        return result;
         }
+
+
         // 圧縮処理
-        function compressData(states) {
+        function compressimgData() {
+            const separator = '-'; // グループを区切るセパレータ
+            // グループごとの状態を取得し、連結して返す
+            const groupStates = groupsData.map(({ sharelistId }) => {
+                const sharelistGroup = document.getElementById(sharelistId);
+                const images = sharelistGroup.querySelectorAll(".img");
+                const states = Array.from(images).map(img => parseInt(img.alt, 10) || 0);
+                const allstates = states.join(""); // グループ内の状態を連結
+                const compressedimgDataR =  `R${runLengthEncode(allstates)}`;
+                const compressedimgData0 = allstates.replace(/0+$/, '');
+                return compressedimgDataR.length < compressedimgData0.length ? compressedimgDataR : compressedimgData0;
+            });    
+        return groupStates.join(separator); // グループ間をseparatorで区切る
         }
+
+        
+        function compresslvData() {
+            // lvInput要素をすべて取得
+            const lvInputs = document.querySelectorAll('.lvinput');
+            const lvValues = [];
+            lvInputs.forEach(lvInput => {
+                const id = lvInput.dataset.id;
+                // 対応するimg要素を取得
+                const img = document.querySelector(`.container[data-id="${id}"] .img`);
+                // imgのaltが0以外の場合、そのlvInputの値を取得
+                if (img && parseInt(img.alt, 10) !== 0) {
+                    lvValues.push(parseInt(lvInput.value).toString(16).padStart(2, '0'));
+                }
+            });
+        return lvValues.join(""); 
+        }
+
+
         // 解凍処理
         function decompressData(encodedData) {
         }
         // 状態復元用関数 
         function restoreState(states){
         }
+
         //resetボタンの処理
+        document.getElementById('reset0').addEventListener('click', function() {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                const id = parseInt(img.dataset.id, 10); 
+                if (id % 1000 === 1 && id >= 1001 && id <= 24001) {
+                // IDが1001, 2001, ..., 24001の規則に一致する場合
+                    img.src = `${baseImageUrl}?text=1`;
+                    img.alt = 1;
+                } else {
+                // その他のIDは状態を0に変更
+                    img.src = `${baseImageUrl}?text=0`;
+                    img.alt = 0;
+                }
+            });
+            updateUrl();
+        });
+
+        const Identitiereset = (stage) => {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                const id = parseInt(img.dataset.id, 10);
+                if (id >= 1001 && id < 13000) {
+                    img.src = `${baseImageUrl}?text=${stage}`;  
+                    img.alt = stage;
+                }
+            });
+            updateUrl();
+        };
+
+        document.getElementById("Identitie-reset1").addEventListener("click", () => Identitiereset(1));
+        document.getElementById("Identitie-reset2").addEventListener("click", () => Identitiereset(2));
+        document.getElementById("Identitie-reset3").addEventListener("click", () => Identitiereset(3));
+        document.getElementById("Identitie-reset4").addEventListener("click", () => Identitiereset(4));
+
+        const EGOreset = (stage) => {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                const id = parseInt(img.dataset.id, 10);
+                if (id >= 13001 && id < 25000) {
+                    img.src = `${baseImageUrl}?text=${stage}`;  
+                    img.alt = stage;
+                }
+            });
+            updateUrl();
+        };
+
+        document.getElementById("E.G.O-reset1").addEventListener("click", () => EGOreset(1));
+        document.getElementById("E.G.O-reset2").addEventListener("click", () => EGOreset(2));
+        document.getElementById("E.G.O-reset3").addEventListener("click", () => EGOreset(3));
+        document.getElementById("E.G.O-reset4").addEventListener("click", () => EGOreset(4));
+
         // テキストエリアの調整関数
         function adjustTextareaHeight() {
             const textareas = document.querySelectorAll('.share-url-textarea');
@@ -272,6 +402,18 @@
         document.addEventListener('DOMContentLoaded', adjustTextareaHeight);
 
         // 共有用URLのコピーボタンの処理
+        document.getElementById('copyButton').addEventListener('click', async function () {
+            const textarea = document.querySelector('.share-url-textarea');
+            const url = textarea.value;
+            try {
+                // Clipboard APIを使用してクリップボードにコピー
+                await navigator.clipboard.writeText(url);
+                alert('共有用URLをコピーしました');
+            } catch (err) {
+                alert('コピーに失敗しました。');
+            }
+        });
+
         //短縮ボタンの処理
         
         
