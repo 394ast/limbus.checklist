@@ -380,10 +380,10 @@
                 let decimal = parseInt(chunk, 32);
                 let push16 = decimal.toString(16);
                 push16 = push16.padStart(5, '0'); // 5文字になるように
-                base16 += push16
+                base16 += push16;
             }
             //余りを繋げる
-            base16 += remainder16
+            base16 += remainder16;
             console.log(base16);
 
             if (base16.length % 2 !== 0) {
