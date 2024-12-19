@@ -191,8 +191,7 @@
             restoreImg(decompressedImg);
         }
         if(lvParam){
-            console.log("lvパラメータがあった");
-            console.log(lvParam);
+            document.getElementById("enableLv").checked = true;
         }
 
 
@@ -242,9 +241,7 @@
             // lvが有効なら、lvのデータも追加
             if(enableLv){
                 const compressedlvData = compresslvData();
-                //後でエンコード処理を書く
-                const encodedlvData = compressedlvData;
-                url += `&lv=${encodedlvData}`;
+                url += `&lv=${compressdlvData}`;
             }
 
             // クラス名でテキストエリアを取得
