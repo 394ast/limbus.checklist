@@ -192,6 +192,7 @@
         }
         if(lvParam){
             document.getElementById("enableLv").checked = true;
+            lvCheckbox.dispatchEvent(new Event('change')); // 切り替えイベントを発火
         }
 
 
