@@ -288,7 +288,6 @@
         return result;
         }
 
-
         // 圧縮処理
         function compressImgData() {
             const separator = '-'; // グループを区切るセパレータ
@@ -305,7 +304,6 @@
         return groupStates.join(separator); // グループ間をseparatorで区切る
         }
 
-        
         function compresslvData() {
             // lvInput要素をすべて取得
             const lvInputs = document.querySelectorAll('.lvinput');
@@ -338,8 +336,6 @@
             return compressedlvData;
         }
         
-
-
         // 解凍処理
         function decompressImgData(encodedImgData) {
             // デコードは後で追加
@@ -384,22 +380,17 @@
             }
             //余りを繋げる
             base16 += remainder16;
-            console.log(base16);
-
             if (base16.length % 2 !== 0) {
                 alert("lvの共有にエラーが発生しました");
             }
-
             let decompressedlv = [];
             for (let i = 0; i < base16.length; i += 2) {
                 let hexPair = base16.slice(i, i + 2); // 2文字を取り出す
                 let decimalValue = parseInt(hexPair, 16); // 16進数を10進数に変換
                 decompressedlv.push(decimalValue);
             }
-        console.log(decompressedlv);
         return decompressedlv;
         }
-
     
         // 状態復元用関数 
         function restoreImg(decompressedImg){
