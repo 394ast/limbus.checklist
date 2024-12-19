@@ -366,7 +366,6 @@
                 }
                 decompressedImg.push(...decoded);
             });
-            console.log(decompressedImg);
             return decompressedImg;
         }
 
@@ -385,6 +384,7 @@
             }
             //余りを繋げる
             base16 += remainder16
+            console.log(base16);
 
             if (base16.length % 2 !== 0) {
                 alert("lvの共有にエラーが発生しました");
