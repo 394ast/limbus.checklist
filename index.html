@@ -599,7 +599,6 @@
                     } catch (clipboardError) {
                     // クリップボードコピーに失敗した場合
                         alert(`短縮は完了しましたが、コピーに失敗しました。手動でコピーしてください。`);
-                        shortenedUrlElement.select();  // 手動コピー用に選択状態にする
                     }
                 } else {
                     throw new Error("URLの短縮に失敗しました。");
