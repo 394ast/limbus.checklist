@@ -159,10 +159,29 @@
                     lvInput.type = 'number';
                     lvInput.value = defaultLv;
                     lvInput.min = 0;
-                    lvInput.max = 50; //レベル上限解放時はここを変更
+                    lvInput.max = 50; //レベル上限解放時はここを変更、下も忘れずに
                     lvInput.step = 1; //レベルは整数のみ
                     lvInput.dataset.id = startId + i;
                     lvInput.classList.add('lvinput');
+
+                    lvInput.addEventListener('input', function () {
+                        let value = lvInput.value.trim();
+                        if (value === "") {
+                            lvInput.value = null; // nullに設定
+                            return;
+                        }
+                        value = parseInt(value);
+                        if (isNaN(value) || value % 1 !== 0) {
+                            lvInput.value = Math.floor(lvInput.value); // 整数に変換
+                            return; // 処理を終了
+                        }
+                        if (value < 0) {
+                            lvInput.value = 0;
+                        } else if (value > 50) {
+                            lvInput.value = 50;
+                        }
+                    }); // 入力を制限、レベル上限解放時はここも変更、上も忘れずに
+
                     lvContainer.appendChild(lvText);
                     lvContainer.appendChild(lvInput);
                     container.appendChild(lvContainer);
@@ -312,7 +331,8 @@
                 const img = document.querySelector(`.container[data-id="${id}"] .img`);
                 // imgのaltが0以外の場合(所持している人格)、そのlvInputの値を取得
                 if (img && parseInt(img.alt, 10) !== 0) {
-                    lvValues.push(parseInt(lvInput.value).toString(16).padStart(2, '0'));
+                    const value = lvInput.value.trim() === "" ? "00" : parseInt(lvInput.value).toString(16).padStart(2, '0');
+                    lvValues.push(value);// null入力にも対応
                 }
             });
             let lvString = lvValues.join(""); 
