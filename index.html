@@ -270,8 +270,10 @@
             // クラス名でテキストエリアを取得して書き換え
             const shareUrl = document.querySelector('.share-url-textarea');
             shareUrl.value = url;
-
+            // テキストエリアの大きさを調整
             adjustTextareaHeight();
+            // 短縮用URLを消去
+            document.querySelector('.shortened-url-textarea').value = '';
         }
 
         // 圧縮関数（ランレングス圧縮）
