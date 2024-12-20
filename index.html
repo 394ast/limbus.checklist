@@ -197,7 +197,6 @@
             restorelv(decompressedlv);
         }
 
-
         // ページが読み込まれたときにもURLを更新
         updateUrl();
 
@@ -391,7 +390,7 @@
             }
         return decompressedlv;
         }
-    
+
         // 状態復元用関数 
         function restoreImg(decompressedImg){
             let idx = 0;
@@ -413,8 +412,27 @@
         }
 
         function restorelv(decompressedlv){
+            const lvInputs = document.querySelectorAll('.lv-input'); // lvInput を取得
+            let index = 0; // decompressedlv の配列インデックス
 
-        }
+            lvInputs.forEach(lvInput => {
+                const imgElement = lvInput.closest('.container')?.querySelector('.img'); // 対応する img を取得
+                    if (imgElement && imgElement.alt === '0') {
+                        // img.alt が 0 の場合、配列は進めずスキップ
+                        return;
+                    }
+                    if (index < decompressedlv.length) {
+                        // 条件に合致する場合のみ lvInput の値を更新
+                        lvInput.value = decompressedlv[index];
+                        index++; // 配列のインデックスを進める
+                    }
+            });
+
+            // 配列が余った場合のエラーチェック
+            if (index < decompressedlv.length) {
+                alert("lvの共有にエラーが発生しました。");
+            }
+         }
 
         //resetボタンの処理
         document.getElementById('reset0').addEventListener('click', function() {
