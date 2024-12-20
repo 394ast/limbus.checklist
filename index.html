@@ -194,6 +194,7 @@
             document.getElementById("enableLv").checked = true;
             lvCheckbox.dispatchEvent(new Event('change')); // 切り替えイベントを発火
             const decompressedlv = decompresslvData(lvParam);
+            console.log(decompressedlv);
             restorelv(decompressedlv);
         }
 
@@ -412,7 +413,8 @@
         }
 
         function restorelv(decompressedlv){
-            const lvInputs = document.querySelectorAll('.lv-input'); // lvInput を取得
+            const lvInputs = document.querySelectorAll('.lvInput'); // lvInput を取得
+            console.log(lvInputs);
             let index = 0; // decompressedlv の配列インデックス
 
             lvInputs.forEach(lvInput => {
