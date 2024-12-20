@@ -96,7 +96,7 @@
     <br>
     <p>もし共有用URLが長くて不便だと感じたら、短縮URLを生成することもできます。<br>
     ただし、生成数上限に達しており、生成できない可能性があります。<br>
-    スマホだと、おそらくコピーに失敗するので、その際は手動でコピーしてください。</p>
+    スマホだとおそらくコピーに失敗するので、その際は手動でコピーしてください。</p>
     <p>短縮URL: <textarea class="shortened-url-textarea" readonly></textarea></p>
     <button id="shortenButton">短縮URLを生成してコピー</button>
 
@@ -132,7 +132,7 @@
         { sharelistId: 'sharelist-group22', groupCount: 7, startId: 22001 },
         { sharelistId: 'sharelist-group23', groupCount: 7, startId: 23001 },
         { sharelistId: 'sharelist-group24', groupCount: 7, startId: 24001 },
-        ];// 新規で追加するときはここを変更する
+        ];// 新規で人格E.G.O追加するときはここを変更する
 
         groupsData.forEach(({ sharelistId, groupCount, startId }) => {
             const sharelistGroup = document.getElementById(sharelistId);
@@ -161,7 +161,7 @@
                     lvInput.type = 'number';
                     lvInput.value = defaultLv;
                     lvInput.min = 0;
-                    lvInput.max = 50; //レベル上限解放時はここを変更、下も忘れずに
+                    lvInput.max = 50; //レベル上限解放時はここを変更、下の2か所も変更を忘れずに
                     lvInput.step = 1; //レベルは整数のみ
                     lvInput.dataset.id = startId + i;
                     lvInput.classList.add('lvinput');
@@ -182,7 +182,7 @@
                         } else if (value > 50) {
                             lvInput.value = 50;
                         }
-                    }); // 入力を制限、レベル上限解放時はここも変更、上も忘れずに
+                    }); // 入力を制限、レベル上限解放時はここも変更、上の1か所も変更を忘れずに
 
                     lvContainer.appendChild(lvText);
                     lvContainer.appendChild(lvInput);
