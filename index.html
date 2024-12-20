@@ -94,7 +94,9 @@
     <button id="copyButton">共有用URLをコピー</button>
     <br>
     <br>
-    <p>もし共有用URLが長くて不便だと感じたら、短縮URLを生成することもできます。<br>ただし、生成数上限に達しており、生成できない可能性があります。</p>
+    <p>もし共有用URLが長くて不便だと感じたら、短縮URLを生成することもできます。<br>
+    ただし、生成数上限に達しており、生成できない可能性があります。<br>
+    スマホだと、おそらくコピーに失敗するので、その際は手動でコピーしてください。</p>
     <p>短縮URL: <textarea class="shortened-url-textarea" readonly></textarea></p>
     <button id="shortenButton">短縮URLを生成してコピー</button>
 
@@ -590,31 +592,28 @@
                     let shortUrl = await response.text();
                     let shortPreviewUrl = baseUrl + "preview/" + shortUrl.slice(baseUrl.length);
                     shortenedUrlElement.value = shortPreviewUrl;
+                    // クリップボードにコピー
+                    try {
+                        await navigator.clipboard.writeText(shortPreviewUrl);
+                        alert("URLを短縮してコピーしました");
+                    } catch (clipboardError) {
+                    // クリップボードコピーに失敗した場合
+                        alert(`短縮は完了しましたが、コピーに失敗しました。手動でコピーしてください。`);
+                        shortenedUrlElement.select();  // 手動コピー用に選択状態にする
+                    }
+                } else {
+                    throw new Error("URLの短縮に失敗しました。");
                 }
+
             } catch (error) {
                 // エラーをアラート表示
                 alert(`エラー: ${error.message}`);
-            }
-
-            // 1秒待ってからコピー処理を実行
-            setTimeout(async function() {
-                const shortUrl = shortenedUrlElement.value.trim(); // テキストエリアの値を取得
-
-                // テキストが空でないことを確認
-                if (shortUrl) {
-                    try {
-                        await navigator.clipboard.writeText(shortUrl);
-                        alert("短縮URLを生成しコピーしました。");
-                        } catch (err) {
-                        alert("短縮URLを生成しましたが、コピーに失敗しました。手動でコピーしてください。");
-                        }
-                } else {
-                alert("短縮URLの生成かコピーに失敗しました。生成に成功しているなら、手動でコピーしてください。");
-                }
-                // 処理完了後にフラグを解除
+            }finally {
+                // 処理完了後に1000ms待機してフラグを解除
+                setTimeout(() => {
                 isProcessing = false;
-                }, 1000); // 1秒待つ
-            
+                }, 1000);
+            }
         });
         
     });
