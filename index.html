@@ -194,7 +194,6 @@
             document.getElementById("enableLv").checked = true;
             lvCheckbox.dispatchEvent(new Event('change')); // 切り替えイベントを発火
             const decompressedlv = decompresslvData(lvParam);
-            console.log(decompressedlv);
             restorelv(decompressedlv);
         }
 
@@ -236,10 +235,9 @@
         function updateUrl() {
             const enableLv = document.getElementById("enableLv").checked;
             const baseUrl = "https://394ast.github.io/limbus.checklist/";
-            const compressedimgData = compressImgData();
-            //後でエンコード処理を書く
-            const encodedimgData = compressedimgData;
-            let url = `${baseUrl}?img=${encodedimgData}`;
+            const compressedImgData = compressImgData();
+            const encodedImgData = toUrlSafeBase64(compressedImgData);
+            let url = `${baseUrl}?img=${encodedImgData}`;
     
             // lvが有効なら、lvのデータも追加
             if(enableLv){
@@ -338,8 +336,7 @@
         
         // 解凍処理
         function decompressImgData(encodedImgData) {
-            // デコードは後で追加
-            const decodedImgData = encodedImgData
+            const decodedImgData = fromUrlSafeBase64(encodedImgData);
             const groups = decodedImgData.split('-');
             const decompressedImg = [];
 
@@ -414,7 +411,6 @@
 
         function restorelv(decompressedlv){
             const lvInputs = document.querySelectorAll('.lvinput'); // lvInput を取得
-            console.log(lvInputs);
             let index = 0; // decompressedlv の配列インデックス
 
             lvInputs.forEach(lvInput => {
@@ -434,7 +430,7 @@
             if (index < decompressedlv.length) {
                 alert("lvの共有にエラーが発生しました。");
             }
-         }
+        }
 
         //resetボタンの処理
         document.getElementById('reset0').addEventListener('click', function() {
@@ -503,6 +499,27 @@
 
         // ページのリサイズ時にも調整
         window.addEventListener('resize', adjustTextareaHeight);
+
+        // ページのリサイズ時にも調整
+        window.addEventListener('resize', adjustTextareaHeight);
+
+        // URLセーフBase64エンコード関数
+        function toUrlSafeBase64(data) {
+            return btoa(data)
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=+$/, ''); 
+        }
+
+        // URLセーフBase64デコード関数
+        function fromUrlSafeBase64(data) {
+            data = data.replace(/-/g, '+').replace(/_/g, '/');
+            // パディングが不足している場合は補完
+            while (data.length % 4) {
+                data += '=';
+            }
+        return atob(data);
+        }
 
         // 共有用URLのコピーボタンの処理
         document.getElementById('copyButton').addEventListener('click', async function () {
